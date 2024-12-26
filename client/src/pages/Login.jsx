@@ -3,47 +3,36 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { assets } from "../assets/assets";
-import { AppContent } from "../context/AppContext";
+import { AppContext } from "../context/AppContext";
 
 const Login = () => {
   const navigate=useNavigate();
-  const {backendUrl,setIsLoggedin}=useContext(AppContent)
+  const {backendUrl,setIsLoggedin}=useContext(AppContext);
   const [state, setState] = useState("Sign Up");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   
-const onSubmitHandler=async(e)=>{
-  try {
-    e.preventDefault();
-    axios.defaults.withCredentials=true;
-    
-    if(state=="Sign Up"){
-      const { data } = await axios.post(`${backendUrl}/api/auth/register`, {
-        name,
-        email,
-        password,
-    });
-           if(data.success){
-           setIsLoggedin(true);
-           navigate('/')
-        }else{
-          toast.error(data.message)
-        }}
-        else{
-        const {data}= await axios.post(`${backendUrl}/api/auth/login`,{email,password})
-       if(data.success){
-        setIsLoggedin(true);
-         navigate('/')
-        }else{
-          toast.error(data.message)
-        }   
-  }
-} catch (error) {
-    toast.error(error.message)
-  }
+const onSubmitHandler = async (e) => {
+  e.preventDefault();
+  axios.defaults.withCredentials = true;
 
-}
+  try {
+    const endpoint = state === "Sign Up" ? "register" : "login";
+    const payload = state === "Sign Up" ? { name, email, password } : { email, password };
+    const { data } = await axios.post(`${backendUrl}/api/auth/${endpoint}`, payload);
+
+    if (data.success) {
+      setIsLoggedin(true);
+      toast.success(data.message);
+      navigate('/');
+    } 
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    toast.error(errorMessage);
+  }
+};
+
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-orange-500 ">
       <img

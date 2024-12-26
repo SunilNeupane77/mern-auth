@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
 
-export const AppContent=createContext();
+export const AppContext = createContext();
 
 export const AppContextProvider=(props)=>{
 
@@ -15,8 +15,8 @@ export const AppContextProvider=(props)=>{
 
     }
      return (
-        <AppContent.Provider value={{value}}>
+        <AppContext.Provider value={value}>
             {props.children}
-        </AppContent.Provider>
+        </AppContext.Provider>
      )
 }
