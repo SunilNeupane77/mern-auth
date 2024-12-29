@@ -7,7 +7,7 @@ import { AppContext } from "../context/AppContext";
 
 const Login = () => {
   const navigate=useNavigate();
-  const {backendUrl,setIsLoggedin}=useContext(AppContext);
+  const {backendUrl,setIsLoggedin,getUserData}=useContext(AppContext);
   const [state, setState] = useState("Sign Up");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -24,9 +24,10 @@ const onSubmitHandler = async (e) => {
 
     if (data.success) {
       setIsLoggedin(true);
-      toast.success(data.message);
+      getUserData();
       navigate('/');
-    } 
+      toast.success(data.message);
+    }
   } catch (error) {
     const errorMessage = error.response?.data?.message || error.message;
     toast.error(errorMessage);
